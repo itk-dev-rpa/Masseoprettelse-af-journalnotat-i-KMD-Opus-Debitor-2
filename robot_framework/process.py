@@ -130,8 +130,6 @@ def do_task(session, queue_element: QueueElement, orchestrator_connection: Orche
     bucket_data = get_bucket_data(data['bucket_id'], data_bucket_conn_string)
     art, notat = bucket_data.split(";", maxsplit=1)
 
-    print(fp, aftaleindhold, art, notat)
-
     try:
         opret_kundekontakt.opret_kundekontakter(session, fp, aftaleindhold, art, notat, lock)
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE)
