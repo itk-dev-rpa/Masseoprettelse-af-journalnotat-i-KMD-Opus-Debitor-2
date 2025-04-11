@@ -26,7 +26,7 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
 
     check_email(orchestrator_connection, data_bucket_conn_string)
 
-    for i in range(0, config.MAX_TASK_COUNT, config.THREAD_COUNT):
+    for _ in range(0, config.MAX_TASK_COUNT, config.THREAD_COUNT):
         # Get new queue elements
         queue_elements: list[QueueElement] = []
         for _ in range(config.THREAD_COUNT):
