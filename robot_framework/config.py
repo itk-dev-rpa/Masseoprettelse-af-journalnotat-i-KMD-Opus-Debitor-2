@@ -13,15 +13,15 @@ SCREENSHOT_SENDER = "robot@friend.dk"
 
 # Constant/Credential names
 ERROR_EMAIL = "Error Email"
+GRAPH_API = "Graph API"
+SAP_LOGIN = "SAP Ejendomsbeskatning"
+SAP_CREDENTIAL = "SAP Masseoprettelse i SAP"
+DATA_BUCKETS = "Data Buckets"
 
 
 # Queue specific configs
-# ----------------------
+MAX_TASK_COUNT = 600  # Limits the number of queue elements to process per run.
+QUEUE_NAME = "Masseoprettelse-af-journalnotat-i-KMD-Opus-Debitor"
 
-# The name of the job queue (if any)
-QUEUE_NAME = None
 
-# The limit on how many queue elements to process
-MAX_TASK_COUNT = 100
-
-# ----------------------
+THREAD_COUNT = 6
