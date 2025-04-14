@@ -68,7 +68,7 @@ def check_email(orchestrator_connection: OrchestratorConnection, data_bucket_con
         # Get email text
         soup = BeautifulSoup(mail.body, "html.parser")
         sections = soup.find_all('p')
-        sender = sections[0].get_text(separator="$").split('$')[1]
+        sender = sections[0].get_text(separator="$").split('$')[1].split(": ")[1]
         art = sections[1].get_text(separator="$").split('$')[1]
         text = sections[2].get_text(separator="$").split('$')[1]
 
