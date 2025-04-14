@@ -120,6 +120,7 @@ def do_task(session, queue_element: QueueElement, orchestrator_connection: Orche
         queue_element: A queue element.
         orchestrator_connection: The orchestrator connection for setting status.
         lock: A threading lock used in opret_kundekontakter.
+        data_bucket_conn_string: The connection string to the data bucket.
     """
     data = json.loads(queue_element.data)
 
@@ -133,6 +134,7 @@ def do_task(session, queue_element: QueueElement, orchestrator_connection: Orche
     try:
         opret_kundekontakt.opret_kundekontakter(session, fp, aftaleindhold, art, notat, lock)
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE)
+    # we need to catch every exception to mark the queue element as failed. The error is re-raised.
     # pylint: disable-next=broad-exception-caught
     except Exception as exc:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
