@@ -74,6 +74,7 @@ def check_email(orchestrator_connection: OrchestratorConnection, data_bucket_con
 
         if sender not in json.loads(orchestrator_connection.process_arguments)["approved_senders"]:
             orchestrator_connection.log_info(f"Sender not on list of approved senders: {sender}")
+            graph_mail.delete_email(mail, graph_access)
             continue
 
         # Insert into data bucket
