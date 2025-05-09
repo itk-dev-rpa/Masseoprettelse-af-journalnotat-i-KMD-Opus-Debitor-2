@@ -72,10 +72,10 @@ def check_email(orchestrator_connection: OrchestratorConnection, data_bucket_con
         art = sections[1].get_text(separator=" ").split(' ', maxsplit=1)[1]
         text = sections[2].get_text(separator=" ").split(' ', maxsplit=1)[1]
 
-        # if sender not in json.loads(orchestrator_connection.process_arguments)["approved_senders"]:
-        #     orchestrator_connection.log_info(f"Sender not on list of approved senders: {sender}")
-        #     graph_mail.delete_email(mail, graph_access)
-        #     continue
+        if sender not in json.loads(orchestrator_connection.process_arguments)["approved_senders"]:
+            orchestrator_connection.log_info(f"Sender not on list of approved senders: {sender}")
+            graph_mail.delete_email(mail, graph_access)
+            continue
 
         # Insert into data bucket
         bucket_id = uuid.uuid4()
