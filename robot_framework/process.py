@@ -14,6 +14,7 @@ from itk_dev_shared_components.graph import authentication as graph_authenticati
 from itk_dev_shared_components.graph import mail as graph_mail
 from bs4 import BeautifulSoup
 import pyodbc
+import itk_dev_event_log
 
 from robot_framework import config
 
@@ -25,6 +26,9 @@ def process(orchestrator_connection: OrchestratorConnection) -> None:
     data_bucket_conn_string = orchestrator_connection.get_constant(config.DATA_BUCKETS).value
 
     check_email(orchestrator_connection, data_bucket_conn_string)
+
+    event_log = orchestrator_connection.get_constant("Event Log")
+    itk_dev_event_log.setup_logging(event_log.value)
 
     for _ in range(0, config.MAX_TASK_COUNT, config.THREAD_COUNT):
         # Get new queue elements
@@ -140,6 +144,7 @@ def do_task(session, queue_element: QueueElement, orchestrator_connection: Orche
     try:
         opret_kundekontakt.opret_kundekontakter(session, fp, aftaleindhold, art, notat, lock)
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.DONE)
+        itk_dev_event_log.emit(orchestrator_connection.process_name, "Note created")
     # we need to catch every exception to mark the queue element as failed. The error is re-raised.
     # pylint: disable-next=broad-exception-caught
     except Exception as exc:
@@ -150,5 +155,5 @@ def do_task(session, queue_element: QueueElement, orchestrator_connection: Orche
 if __name__ == '__main__':
     conn_string = os.getenv("OpenOrchestratorConnString")
     crypto_key = os.getenv("OpenOrchestratorKey")
-    oc = OrchestratorConnection("Masseopret Test", conn_string, crypto_key, '')
+    oc = OrchestratorConnection("Masseopret Test", conn_string, crypto_key, '', '')
     process(oc)
