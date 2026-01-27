@@ -120,7 +120,6 @@ def read_file(file: BytesIO) -> list[str]:
     return lines
 
 
-
 @lru_cache
 def get_bucket_data(key: str, data_bucket_conn_string: str) -> str:
     """Get data from the data buckets with the given key.
