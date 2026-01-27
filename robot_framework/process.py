@@ -1,5 +1,6 @@
 """This module contains the main process of the robot."""
 
+from io import BytesIO
 import json
 import os
 import uuid
@@ -90,7 +91,7 @@ def check_email(orchestrator_connection: OrchestratorConnection, data_bucket_con
         # Read attached file
         attachments = graph_mail.list_email_attachments(mail, graph_access)
         file = graph_mail.get_attachment_data(attachments[0], graph_access)
-        references = file.read().decode().splitlines()
+        references = read_file(file)
 
         # Create queue elements
         data = {"bucket_id": str(bucket_id)}
@@ -101,6 +102,22 @@ def check_email(orchestrator_connection: OrchestratorConnection, data_bucket_con
             orchestrator_connection.create_queue_element(config.QUEUE_NAME, reference=reference, data=data, created_by="Robot")
 
         graph_mail.delete_email(mail, graph_access)
+
+
+def read_file(file: BytesIO) -> list[str]:
+    """Read a file with reference data.
+    Removes dangling semicolons and headers.
+
+    Returns:
+        A cleaned list of lines from the file.
+    """
+    lines = file.read().decode().splitlines()
+
+    lines = [line for line in lines if line]
+    lines = [line.strip(";") for line in lines]
+    lines = [line for line in lines if not line.lower().startswith("cpr")]
+
+    return lines
 
 
 @lru_cache
