@@ -7,6 +7,7 @@ import uuid
 from datetime import datetime
 from functools import lru_cache
 import threading
+import re
 
 from OpenOrchestrator.orchestrator_connection.connection import OrchestratorConnection
 from OpenOrchestrator.database.queues import QueueElement, QueueStatus
@@ -111,14 +112,12 @@ def read_file(file: BytesIO) -> list[str]:
     Returns:
         A cleaned list of lines from the file.
     """
+    pattern = re.compile(r"\d+;?\d*")
     lines = file.read().decode().splitlines()
 
-    lines = [line for line in lines if line]
-    lines = [line.strip(";") for line in lines]
-    lines = [line for line in lines if not line.lower().startswith("cpr")]
+    lines = [line.rstrip(";") for line in lines if pattern.fullmatch(line)]
 
     return lines
-
 
 
 @lru_cache
