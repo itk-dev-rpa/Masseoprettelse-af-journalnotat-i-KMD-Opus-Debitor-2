@@ -167,10 +167,3 @@ def do_task(session, queue_element: QueueElement, orchestrator_connection: Orche
     except Exception as exc:
         orchestrator_connection.set_queue_element_status(queue_element.id, QueueStatus.FAILED)
         raise exc
-
-
-if __name__ == '__main__':
-    conn_string = os.getenv("OpenOrchestratorConnString")
-    crypto_key = os.getenv("OpenOrchestratorKey")
-    oc = OrchestratorConnection("Masseopret Test", conn_string, crypto_key, '', '', "")
-    process(oc)
